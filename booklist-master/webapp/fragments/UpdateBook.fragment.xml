@@ -1,0 +1,33 @@
+<core:FragmentDefinition xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:c="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form"
+	xmlns:ui="sap.ui">
+    <Dialog afterClose="onModalDestroy">
+        <f:SimpleForm id="idAddOrUpdateForm" maxContainerCols="4" editable="true"
+        layout="ResponsiveGridLayout" title="{i18n>book}" labelSpanL="2" 
+        emptySpanL="0" emptySpanM="0" columnsL="1" columnsM="1" class="editableForm">
+           <f:content>
+                <core:Title text="{i18n>bookInfo}" />
+                <Label text="ISBN"/>
+                <Input id="isbnInput" value="{/ISBN}" placeholder="ISBN"/>
+                <Label text="{i18n>title}"/>
+                <Input value="{/Title}" placeholder="{i18n>title}"/>
+                <Label text="{i18n>author}"/>
+                <Input value="{/Author}" placeholder="{i18n>author}"/>
+                <Label text="{i18n>publishedOn}"/>
+                <DatePicker id="validDatePicker" value="{/PublicationDate}" valueFormat="dd/MM/yyyy" displayFormat="short"/>
+                <Label text="{i18n>language}"/>
+                <Input value="{/Language}" placeholder="{i18n>language}"/>
+                <Label text="{i18n>totalBooks}"/>
+                <Input value="{path:'/TotalNumber', type:'sap.ui.model.odata.type.Int32'}" placeholder="{i18n>totalBooks}"/>
+                <Label text="{i18n>availableBooks}"/>
+                <Input value="{path:'/AvailableNumber', type:'sap.ui.model.odata.type.Int32'}" placeholder="{i18n>availableBooks}"/>
+                <Button text="{i18n>save}" type="Accept" press="onModalOK"/>
+                <Button text="{i18n>cancel}" type="Reject" press="onModalCancel"/>
+            </f:content>
+        </f:SimpleForm>
+    </Dialog>
+
+</core:FragmentDefinition>
