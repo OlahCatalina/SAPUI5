@@ -23,6 +23,7 @@ sap.ui.define([
         // called when "Sort" button is pressed
         onSortButtonPressed: function(oEvent) { 
             this._oDialog = sap.ui.xmlfragment("org.ubb.books.fragments.Sorter", this);
+            this._oDialog.setModel(this.getView().getModel("i18n"), "i18n");
             this._oDialog.open();
         },
         // called when "Delete" button is pressed
@@ -125,6 +126,24 @@ sap.ui.define([
             oBinding.sort(aSorters);
 
         },
+        // validates the inputs from the filter inputs
+        areFiltersValid: function(isbn, dateStart, dateEnd, language){
+            var isValid = true;
+            var oResourceBundle = this.getView().getModel("i18n").getResourceBundle();
+            if(isbn != "" && isbn.length != 13){
+                isValid = false;
+                MessageToast.show(oResourceBundle.getText("isbnWarning"));
+            }            
+            else if(language != "" && language.length != 2){
+                isValid = false;
+                MessageToast.show(oResourceBundle.getText("languageCodeWarning"));
+            }
+            else if(dateStart != "" && dateEnd != "" && dateStart > dateEnd){
+                isValid = false;
+                MessageToast.show(oResourceBundle.getText("datesOrderWarning"));
+            }
+            return isValid;
+        },
         // called when filtering
         onSearchButtonPressed(oEvent){
             // get the data from the inputs
@@ -139,23 +158,26 @@ sap.ui.define([
             var oList = this.getView().byId("idBooksTable");
             var oBinding = oList.getBinding("items");
 
-            if(isbn){
-                aFilter.push(new Filter("ISBN", FilterOperator.Contains, isbn));
-            }
-            if(author){
-                aFilter.push(new Filter("Author", FilterOperator.Contains, author));
-            }
-            if(title){
-                aFilter.push(new Filter("Title", FilterOperator.Contains, title));
-            }
-            if(dateStart && dateEnd){
-                var filter = new Filter("PublicationDate", FilterOperator.BT, dateStart, dateEnd)
-                aFilter.push(filter);
-            }
-            if(language){
-                aFilter.push(new Filter("Language", FilterOperator.Contains, language));
-            }
-            oBinding.filter(aFilter);
+            var valid = this.areFiltersValid(isbn, dateStart, dateEnd, language);
+            if(valid) {
+                if(isbn){
+                    aFilter.push(new Filter("ISBN", FilterOperator.Contains, isbn));
+                }
+                if(author){
+                    aFilter.push(new Filter("Author", FilterOperator.Contains, author));
+                }
+                if(title){
+                    aFilter.push(new Filter("Title", FilterOperator.Contains, title));
+                }
+                if(dateStart && dateEnd){
+                    var filter = new Filter("PublicationDate", FilterOperator.BT, dateStart, dateEnd)
+                    aFilter.push(filter);
+                }
+                if(language){
+                    aFilter.push(new Filter("Language", FilterOperator.Contains, language));
+                }
+                oBinding.filter(aFilter);
+            }            
         },
         // validates the inputs from the modal
         areInputsValid(){
